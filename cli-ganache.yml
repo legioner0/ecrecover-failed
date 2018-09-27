@@ -1,0 +1,9 @@
+ethereum:
+  endpoint: "http://localhost:8547" # ethereum client rpc endpoint
+  from: "0x2d95f6089cfbb24a14314e6b8f612d52a395662c" # Here must be address of unlocked account in ethereum client
+  lockfilesDir: "{cwd}"
+  gas: "45e5"
+  gasPrice: "10e9"
+  pkey: "57983e408e9a2cc43e5a9bf3285960bf0e79b1d06a667034d50e0a0ea01ef5dc" # This is pkey of random account, you may use your own
+  ECRecoverTest:
+    schema: "{moduledir}/build/contracts/ECRecoverTest.json"

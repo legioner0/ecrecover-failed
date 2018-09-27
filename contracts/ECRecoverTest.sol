@@ -5,6 +5,15 @@ contract ECRecoverTest {
 
     constructor() public {}
 
+    event testComlete(address user, address owner);
+
+    function test(uint8 v, bytes32 r, bytes32 s, address user, address owner) public {
+        if (recover(v, r, s, user) != owner) {
+            revert();
+        }
+        emit testComlete(user, owner);
+    }
+
     function recover(uint8 v, bytes32 r, bytes32 s, address user) public pure returns (address) {
         return ecrecover(hash(user), v, r, s);
     }

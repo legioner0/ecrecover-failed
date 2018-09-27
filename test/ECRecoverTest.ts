@@ -1,34 +1,13 @@
-import {ItTestFn, IContractInstance, address, IContract} from '../globals';
+import {ItTestFn} from '../globals';
 import * as BigNumber from 'bignumber.js';
-import * as Web3 from 'web3';
+import {IECRecoverTest} from '../contracts';
 const EthUtil = require('ethereumjs-util');
 
-interface IArtifacts {
-  require(name: './ECRecoverTest.sol'): IContract<IECRecoverTest>;
-
-  require(name: './Migrations.sol'): IContract<IContractInstance>;
-}
-
-declare global {
-  const artifacts: IArtifacts;
-}
-
-interface IECRecoverTest extends IContractInstance {
-
-  recover(v: BigNumber.NumberLike, r: BigNumber.NumberLike, s: BigNumber.NumberLike, user: address,
-          tr?: Web3.TransactionRequest): Promise<address>;
-
-  hash(user: address, tr?: Web3.TransactionRequest): Promise<BigNumber.NumberLike>;
-
-  encode(user: address, tr?: Web3.TransactionRequest): Promise<BigNumber.NumberLike>;
-
-}
 const it = (<any>global).it as ItTestFn;
 const assert = (<any>global).assert as Chai.AssertStatic;
 
 const ECRecoverTest = artifacts.require('./ECRecoverTest.sol');
 
-// this value only for currently specified in run-tests-mnemonic.txt seeds (you can take it from ganache-cli.log)!
 const PKEY: string = "57983e408e9a2cc43e5a9bf3285960bf0e79b1d06a667034d50e0a0ea01ef5dc";
 const ADDR: string = '0x'+ EthUtil.pubToAddress(EthUtil.privateToPublic(Buffer.from(PKEY, 'hex'))).toString('hex');
 

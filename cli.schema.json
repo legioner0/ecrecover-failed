@@ -1,0 +1,66 @@
+{
+  "$id": "ICliConfig",
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "definitions": {},
+  "properties": {
+    "ethereum": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "description": "Network endpoint URL"
+        },
+        "lockfilesDir": {
+          "type": "string",
+          "description": "Directory where contract deployment lock files stored"
+        },
+        "from": {
+          "type": "string",
+          "pattern": "^0x[a-zA-Z0-9]{40}$",
+          "description": "Network from address"
+        },
+        "gas": {
+          "type": "string",
+          "description": "Default Gas limit",
+          "pattern": "^\\d+(e\\d+)?$"
+        },
+        "gasPrice": {
+          "type": "string",
+          "description": "Default Gas price",
+          "pattern": "^\\d+(e\\d+)?$"
+        },
+        "pkey": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]{64}$",
+          "description": "Some pkey"
+        },
+        "ECRecoverTest": {
+          "type": "object",
+          "description": "test contract",
+          "properties": {
+            "schema": {
+              "type": "string",
+              "description": "Path to the contract schema"
+            }
+          },
+          "required": [
+            "schema"
+          ]
+        }
+      },
+      "required": [
+        "endpoint",
+        "from",
+        "lockfilesDir",
+        "gas",
+        "gasPrice",
+	"pkey",
+        "ECRecoverTest"
+      ]
+    }
+  },
+  "required": [
+    "ethereum"
+  ]
+}

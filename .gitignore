@@ -117,4 +117,6 @@ fabric.properties
 *.js.map
 *.js
 package-lock.json
+cli.yml
+ECRecoverTest.lock
 !/truffle.js
