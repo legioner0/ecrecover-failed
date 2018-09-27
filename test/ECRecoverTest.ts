@@ -30,11 +30,9 @@ const ECRecoverTest = artifacts.require('./ECRecoverTest.sol');
 
 // this value only for currently specified in run-tests-mnemonic.txt seeds (you can take it from ganache-cli.log)!
 const PKEY: string = "57983e408e9a2cc43e5a9bf3285960bf0e79b1d06a667034d50e0a0ea01ef5dc";
+const ADDR: string = '0x'+ EthUtil.pubToAddress(EthUtil.privateToPublic(Buffer.from(PKEY, 'hex'))).toString('hex');
 
 contract('ECRecoverTest', function (accounts: string[]) {
-  assert.equal('0x'+ EthUtil.pubToAddress(EthUtil.privateToPublic(Buffer.from(PKEY, 'hex'))).toString('hex'),
-      accounts[0], "Please set correct PKEY");
-
   it('contract must be return correct values', async () => {
     const contract = await ECRecoverTest.deployed();
 
@@ -66,10 +64,10 @@ contract('ECRecoverTest', function (accounts: string[]) {
         console.log('\thash in  js: 0x' + hash.toString('hex'));
         console.log('\thash in sol: ' + hashContract);
         assert.equal('0x' + hash.toString('hex'), hashContract, 'hash must be equals');
-        console.log('\trecovered must be: ' + accounts[0]);
+        console.log('\trecovered must be: ' + ADDR);
         console.log('\trecovered in   js: 0x' + recovered.toString('hex'));
         console.log('\trecovered in  sol: ' + recoveredContract);
-        assert.equal('0x' + recovered.toString('hex'), accounts[0], 'recovered and accounts[0] must be equals');
+        assert.equal('0x' + recovered.toString('hex'), ADDR, 'recovered and ADDR must be equals');
       }
     }
     console.log(errors + ' errors of ' + accounts.length);

@@ -16,7 +16,7 @@ function exit(code: number) {
 
 // Run TestRPC
 (function () {
-  const args = ['-a', '30', '-p', '8552'];
+  const args = ['-a', '100', '-p', '8552'];
   if (mnemonic != null) {
     args.push('-m', mnemonic);
   }
