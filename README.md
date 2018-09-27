@@ -1,5 +1,5 @@
-This is a simple test for ecrecover function in solidity 0.4.24
-===============================================================
+This is a simple test for ecrecover function in solidity 0.4.24 and 0.4.25
+==========================================================================
 
 There is problem with `ecrecover` - function returns incorrect value for some input data.
 
