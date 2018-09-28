@@ -10,6 +10,7 @@ import {IECRecoverTest} from './contracts';
 import {ICliConfig} from './cli.schema';
 import readline = require('readline');
 import * as BigNumber from 'bignumber.js';
+
 const EthUtil = require('ethereumjs-util');
 const addresses = require('./addresses.json');
 
@@ -232,7 +233,8 @@ handlers['test'] = async () => {
   failIfNotDeployed('ECRecoverTest');
   const contract = ctx.ECRecoverTest.instance;
 
-  const ADDR: string = '0x'+ EthUtil.pubToAddress(EthUtil.privateToPublic(Buffer.from(ctx.cfg.ethereum.pkey, 'hex'))).toString('hex');
+  const ADDR: string = '0x' + EthUtil.pubToAddress(EthUtil.privateToPublic(Buffer.from(ctx.cfg.ethereum.pkey, 'hex')))
+      .toString('hex');
   for (let i = 0; i < addresses.length; i++) {
     const user = addresses[i];
 
@@ -263,9 +265,9 @@ handlers['test'] = async () => {
       console.log('signature:', signature.v, signature.r.toString('hex'), signature.s.toString('hex'));
     }
     console.log('tx result:' + await contract.test(signature.v,
-        new BigNumber(signature.r.toString('hex'), 16),
-        new BigNumber(signature.s.toString('hex'), 16),
-	user, ADDR, {from: ctx.cfg.ethereum.from}));
+                                                   new BigNumber(signature.r.toString('hex'), 16),
+                                                   new BigNumber(signature.s.toString('hex'), 16),
+                                                   user, ADDR, {from: ctx.cfg.ethereum.from}));
   }
 };
 
