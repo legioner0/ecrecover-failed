@@ -21,18 +21,25 @@ contract('ECRecoverTest', function (accounts: string[]) {
 
       const encoded = Buffer.from(user.replace(/^0x/, ''), 'hex');
       const hash = EthUtil.keccak(encoded);
-      const signature = EthUtil.ecsign(hash, Buffer.from(PKEY, 'hex'));
-      const recovered = EthUtil.publicToAddress(EthUtil.ecrecover(hash, signature.v, signature.r, signature.s));
+      const prefixedHash = EthUtil.hashPersonalMessage(hash);
+      const signature = EthUtil.ecsign(prefixedHash, Buffer.from(PKEY, 'hex'));
+      const recovered = EthUtil.publicToAddress(EthUtil.ecrecover(prefixedHash, signature.v, signature.r, signature.s));
 
       const encodedContract = await contract.encode(user);
       const hashContract = await contract.hash(user);
+      const prefixedHashContract = await contract.prefixedHash(user);
+      const prefixedRecoveredContract = await contract.prefixedRecover(
+          signature.v,
+          new BigNumber(signature.r.toString('hex'), 16),
+          new BigNumber(signature.s.toString('hex'), 16),
+          user);
       const recoveredContract = await contract.recover(
           signature.v,
           new BigNumber(signature.r.toString('hex'), 16),
           new BigNumber(signature.s.toString('hex'), 16),
           user);
 
-      if ('0x' + recovered.toString('hex') === recoveredContract) {
+      if ('0x' + recovered.toString('hex') === prefixedRecoveredContract) {
         console.log(user + ' - correct recover');
       } else {
         errors++;
@@ -43,9 +50,13 @@ contract('ECRecoverTest', function (accounts: string[]) {
         console.log('\thash in  js: 0x' + hash.toString('hex'));
         console.log('\thash in sol: ' + hashContract);
         assert.equal('0x' + hash.toString('hex'), hashContract, 'hash must be equals');
-        console.log('\trecovered must be: ' + ADDR);
-        console.log('\trecovered in   js: 0x' + recovered.toString('hex'));
-        console.log('\trecovered in  sol: ' + recoveredContract);
+        console.log('\tprefixedHash in  js: 0x' + prefixedHash.toString('hex'));
+        console.log('\tprefixedHash in sol: ' + prefixedHashContract);
+        assert.equal('0x' + prefixedHash.toString('hex'), prefixedHashContract, 'prefixedHash must be equals');
+        console.log('\trecovered must be        : ' + ADDR);
+        console.log('\trecovered in           js: 0x' + recovered.toString('hex'));
+        console.log('\trecovered in          sol: ' + recoveredContract);
+        console.log('\trecovered in prefixed sol: ' + prefixedRecoveredContract);
         assert.equal('0x' + recovered.toString('hex'), ADDR, 'recovered and ADDR must be equals');
       }
     }

@@ -240,18 +240,25 @@ handlers['test'] = async () => {
 
     const encoded = Buffer.from(user.replace(/^0x/, ''), 'hex');
     const hash = EthUtil.keccak(encoded);
-    const signature = EthUtil.ecsign(hash, Buffer.from(ctx.cfg.ethereum.pkey, 'hex'));
-    const recovered = EthUtil.publicToAddress(EthUtil.ecrecover(hash, signature.v, signature.r, signature.s));
+    const prefixedHash = EthUtil.hashPersonalMessage(hash);
+    const signature = EthUtil.ecsign(prefixedHash, Buffer.from(ctx.cfg.ethereum.pkey, 'hex'));
+    const recovered = EthUtil.publicToAddress(EthUtil.ecrecover(prefixedHash, signature.v, signature.r, signature.s));
 
     const encodedContract = await contract.encode(user, {from: ctx.cfg.ethereum.from});
     const hashContract = await contract.hash(user, {from: ctx.cfg.ethereum.from});
-    const recoveredContract = await contract.recover(
+    const prefixedHashContract = await contract.prefixedHash(user);
+    const prefixedRecoveredContract = await contract.prefixedRecover(
         signature.v,
         new BigNumber(signature.r.toString('hex'), 16),
         new BigNumber(signature.s.toString('hex'), 16),
         user, {from: ctx.cfg.ethereum.from});
+    const recoveredContract = await contract.recover(
+        signature.v,
+        new BigNumber(signature.r.toString('hex'), 16),
+        new BigNumber(signature.s.toString('hex'), 16),
+        user);
 
-    if ('0x' + recovered.toString('hex') === recoveredContract) {
+    if ('0x' + recovered.toString('hex') === prefixedRecoveredContract) {
       console.log(user + ' - correct recover');
     } else {
       console.log(user + ' - incorrect recover');
@@ -259,15 +266,24 @@ handlers['test'] = async () => {
       console.log('\tencoded in sol: ' + encodedContract);
       console.log('\thash in  js: 0x' + hash.toString('hex'));
       console.log('\thash in sol: ' + hashContract);
-      console.log('\trecovered must be: ' + ADDR);
-      console.log('\trecovered in   js: 0x' + recovered.toString('hex'));
-      console.log('\trecovered in  sol: ' + recoveredContract);
+      console.log('\tprefixedHash in  js: 0x' + prefixedHash.toString('hex'));
+      console.log('\tprefixedHash in sol: ' + prefixedHashContract);
+      console.log('\trecovered must be        : ' + ADDR);
+      console.log('\trecovered in           js: 0x' + recovered.toString('hex'));
+      console.log('\trecovered in          sol: ' + recoveredContract);
+      console.log('\trecovered in prefixed sol: ' + prefixedRecoveredContract);
       console.log('signature:', signature.v, signature.r.toString('hex'), signature.s.toString('hex'));
     }
-    console.log('tx result:' + await contract.test(signature.v,
-                                                   new BigNumber(signature.r.toString('hex'), 16),
-                                                   new BigNumber(signature.s.toString('hex'), 16),
-                                                   user, ADDR, {from: ctx.cfg.ethereum.from}));
+    try {
+      await contract.prefixedTest(signature.v,
+                                  new BigNumber(signature.r.toString('hex'), 16),
+                                  new BigNumber(signature.s.toString('hex'), 16),
+                                  user, ADDR, {from: ctx.cfg.ethereum.from});
+    } catch (error) {
+      // ignore errors
+      console.log(error);
+    }
+
   }
 };
 
