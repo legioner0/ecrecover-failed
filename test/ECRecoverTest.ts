@@ -30,13 +30,13 @@ contract('ECRecoverTest', function (accounts: string[]) {
       const prefixedHashContract = await contract.prefixedHash(user);
       const prefixedRecoveredContract = await contract.prefixedRecover(
           signature.v,
-          new BigNumber(signature.r.toString('hex'), 16),
-          new BigNumber(signature.s.toString('hex'), 16),
+          '0x' + signature.r.toString('hex'),
+          '0x' + signature.s.toString('hex'),
           user);
       const recoveredContract = await contract.recover(
           signature.v,
-          new BigNumber(signature.r.toString('hex'), 16),
-          new BigNumber(signature.s.toString('hex'), 16),
+          '0x' + signature.r.toString('hex'),
+          '0x' + signature.s.toString('hex'),
           user);
 
       if ('0x' + recovered.toString('hex') === prefixedRecoveredContract) {

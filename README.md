@@ -1,15 +1,12 @@
-This is a simple test for ecrecover function in solidity 0.4.24 and 0.4.25
-==========================================================================
+This is a simple test for ecrecover function
+============================================
 
-There is problem with `ecrecover` - function returns incorrect value for some input data.
+This project implementing sign data and it's check via smart contract.
 
-`ECRecoverTest.sol` - simple contract with sign check logic: `ecrecover(keccak256(abi.encodePacked(address)), v, r, s)`.
+`ECRecoverTest.sol` - simple contract with sign check logic: `ecrecover(keccak256(abi.encodePacked(address)), v, r, s)` and prefixed variant.
 
 `ECRecoverTest.ts` - tests for `ecrecover`: compute `keccak256(address)`, sign with private key, try to recover 
 it by `ecrecover` and compare values with corresponding return values of functions in contract.
-
-As you can see some input data leads to error (11 of 100 for current `PKEY` and seeds) - value returned from `ecrecover`
-in contract is not equals to `PKEY` owner.
 
 Usage
 -----
@@ -30,5 +27,3 @@ Default values from `cli-ganache.yml` can be used with ganache node started via 
 
 If you want to re-deploy contract, don't forget to delete file `ECRecoverTest.lock`
 
-https://ropsten.etherscan.io/address/0x4e146f2a85f51d73aa56cf84b1879e1c2fb056d5 - Here is deployed contract on ropsten. It was deployed with default values from this project.
-First transaction - is correct ecrecover result, second transaction - is incorrect.

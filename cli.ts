@@ -249,13 +249,13 @@ handlers['test'] = async () => {
     const prefixedHashContract = await contract.prefixedHash(user);
     const prefixedRecoveredContract = await contract.prefixedRecover(
         signature.v,
-        new BigNumber(signature.r.toString('hex'), 16),
-        new BigNumber(signature.s.toString('hex'), 16),
+        '0x' + signature.r.toString('hex'),
+        '0x' + signature.s.toString('hex'),
         user, {from: ctx.cfg.ethereum.from});
     const recoveredContract = await contract.recover(
         signature.v,
-        new BigNumber(signature.r.toString('hex'), 16),
-        new BigNumber(signature.s.toString('hex'), 16),
+        '0x' + signature.r.toString('hex'),
+        '0x' + signature.s.toString('hex'),
         user);
 
     if ('0x' + recovered.toString('hex') === prefixedRecoveredContract) {
@@ -276,8 +276,8 @@ handlers['test'] = async () => {
     }
     try {
       await contract.prefixedTest(signature.v,
-                                  new BigNumber(signature.r.toString('hex'), 16),
-                                  new BigNumber(signature.s.toString('hex'), 16),
+                              '0x' + signature.r.toString('hex'),
+                              '0x' + signature.s.toString('hex'),
                                   user, ADDR, {from: ctx.cfg.ethereum.from});
     } catch (error) {
       // ignore errors
